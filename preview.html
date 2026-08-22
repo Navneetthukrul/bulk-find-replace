@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DevHub — Developer Toolbox</title>
+<style>
+  :root{
+    --bg:#0a0d12;
+    --panel:#10151d;
+    --panel2:#141a23;
+    --border:#242c38;
+    --text:#eef2f7;
+    --muted:#8e99a8;
+    --accent:#6ee7b7;
+    --accent2:#60a5fa;
+    --danger:#fb7185;
+    --shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;background:
+      radial-gradient(circle at 70% -10%,rgba(96,165,250,.12),transparent 32%),
+      radial-gradient(circle at 20% 10%,rgba(110,231,183,.08),transparent 28%),
+      var(--bg);
+    color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  }
+  button,input{font:inherit}
+  .app{display:grid;grid-template-columns:245px 1fr;min-height:100vh}
+  aside{
+    position:sticky;top:0;height:100vh;border-right:1px solid var(--border);
+    background:rgba(10,13,18,.88);backdrop-filter:blur(18px);padding:18px 14px;
+    display:flex;flex-direction:column;
+  }
+  .brand{display:flex;align-items:center;gap:10px;padding:8px 10px 22px}
+  .logo{
+    width:34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#061016;font-weight:900;
+  }
+  .brand b{font-size:17px;letter-spacing:-.3px}
+  .brand span{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+  .nav-label{font-size:10px;color:#657083;text-transform:uppercase;letter-spacing:1.2px;padding:15px 10px 7px}
+  .nav{display:flex;flex-direction:column;gap:3px}
+  .nav button{
+    border:0;background:transparent;color:#aeb8c7;text-align:left;padding:10px 11px;border-radius:9px;
+    cursor:pointer;display:flex;align-items:center;gap:10px;font-size:13px;
+  }
+  .nav button:hover,.nav button.active{background:#171e28;color:#fff}
+  .nav button.active{box-shadow:inset 2px 0 var(--accent)}
+  .icon{width:18px;text-align:center;opacity:.9}
+  .bottom{margin-top:auto;border-top:1px solid var(--border);padding-top:12px}
+  .upgrade{background:linear-gradient(145deg,#14251f,#111a22);border:1px solid #27483c;border-radius:12px;padding:12px}
+  .upgrade b{font-size:12px}.upgrade p{font-size:10px;color:var(--muted);line-height:1.5;margin:6px 0 10px}
+  .upgrade button{width:100%;border:0;border-radius:7px;background:var(--accent);color:#061016;padding:7px;font-size:11px;font-weight:800}
+  main{min-width:0}
+  header{
+    height:68px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:16px;
+    padding:0 30px;position:sticky;top:0;background:rgba(10,13,18,.78);backdrop-filter:blur(18px);z-index:5;
+  }
+  .search{position:relative;flex:1;max-width:720px}
+  .search input{
+    width:100%;background:#111720;border:1px solid var(--border);border-radius:9px;
+    color:#fff;padding:11px 90px 11px 39px;outline:none;font-size:13px;
+  }
+  .search input:focus{border-color:#3a536d;box-shadow:0 0 0 3px rgba(96,165,250,.07)}
+  .search .magnify{position:absolute;left:14px;top:10px;color:#6f7b8b}
+  .shortcut{position:absolute;right:10px;top:7px;color:#697588;border:1px solid #2a3340;border-radius:5px;padding:3px 6px;font-size:10px}
+  .top-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .top-actions button{border:1px solid var(--border);background:#111720;color:#b9c3d1;border-radius:8px;padding:8px 10px;cursor:pointer}
+  .avatar{width:30px;height:30px;border-radius:50%;background:#243143;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .content{padding:32px 38px 60px;max-width:1440px;margin:auto}
+  .hero{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:28px}
+  .eyebrow{font-size:11px;color:var(--accent);font-weight:800;letter-spacing:1.5px;text-transform:uppercase}
+  h1{font-size:36px;letter-spacing:-1.7px;margin:8px 0 8px;line-height:1.05}
+  .hero p{color:var(--muted);font-size:14px;margin:0;max-width:650px}
+  .hero-right{display:flex;gap:8px}
+  .pill{padding:8px 11px;border:1px solid var(--border);border-radius:999px;color:#9da8b8;font-size:11px;background:#0f141c}
+  .section-title{display:flex;justify-content:space-between;align-items:center;margin:28px 0 12px}
+  .section-title h2{font-size:15px;margin:0}.section-title span{font-size:11px;color:var(--muted)}
+  .quick{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .quick-card{
+    background:linear-gradient(145deg,#121923,#0f141b);border:1px solid var(--border);border-radius:12px;
+    padding:14px;cursor:pointer;transition:.18s;min-height:102px;
+  }
+  .quick-card:hover{transform:translateY(-2px);border-color:#3b4a5c;box-shadow:var(--shadow)}
+  .quick-icon{font-size:19px;margin-bottom:10px}.quick-card b{font-size:12px}.quick-card p{font-size:10px;color:var(--muted);margin:4px 0 0}
+  .layout{display:grid;grid-template-columns:1fr 290px;gap:18px}
+  .tools{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .tool{
+    position:relative;background:#10161f;border:1px solid var(--border);border-radius:11px;padding:14px;
+    min-height:112px;cursor:pointer;transition:.18s;
+  }
+  .tool:hover{border-color:#3d4c5e;background:#131b25;transform:translateY(-1px)}
+  .tool .tooltop{display:flex;justify-content:space-between;align-items:center}
+  .tool .toolicon{width:31px;height:31px;border-radius:8px;background:#192330;display:grid;place-items:center}
+  .star{border:0;background:transparent;color:#5f6b7b;cursor:pointer;font-size:15px}.star.on{color:#f5c451}
+  .tool b{display:block;font-size:12px;margin-top:11px}.tool p{color:var(--muted);font-size:10px;margin:4px 0;line-height:1.4}
+  .tag{display:inline-block;color:#718096;font-size:9px;border:1px solid #27313e;border-radius:4px;padding:2px 5px;margin-top:5px}
+  .sidepanel{background:#10161f;border:1px solid var(--border);border-radius:12px;padding:16px;height:max-content}
+  .sidepanel h3{font-size:13px;margin:0 0 12px}.recent{display:flex;flex-direction:column;gap:8px}
+  .recent-item{padding:9px;border-radius:8px;background:#141b24;cursor:pointer}.recent-item:hover{background:#19222d}
+  .recent-item b{font-size:11px}.recent-item small{display:block;color:#687486;font-size:9px;margin-top:3px}
+  .banner{
+    margin-top:18px;padding:15px 16px;border:1px solid #244d41;border-radius:11px;
+    background:linear-gradient(100deg,rgba(110,231,183,.08),rgba(96,165,250,.05));
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+  }
+  .banner b{font-size:12px}.banner p{font-size:10px;color:var(--muted);margin:4px 0 0}
+  .banner button{white-space:nowrap;border:1px solid #356b59;background:#12251f;color:#a9f3d5;border-radius:7px;padding:8px 11px;font-size:10px;cursor:pointer}
+  .modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.64);z-index:20;align-items:flex-start;justify-content:center;padding-top:100px}
+  .modal.open{display:flex}
+  .modal-box{width:min(720px,92vw);background:#10161f;border:1px solid #334051;border-radius:14px;box-shadow:0 30px 100px #000;padding:18px}
+  .modal-box input{width:100%;background:#0b1016;border:1px solid #303b4a;color:#fff;border-radius:9px;padding:13px;outline:none}
+  .results{margin-top:10px;display:grid;gap:6px}.result{padding:11px;border-radius:8px;background:#151d27;cursor:pointer}.result:hover{background:#1a2531}.result b{font-size:12px}.result span{float:right;color:#647184;font-size:10px}
+  @media(max-width:1050px){.quick{grid-template-columns:repeat(3,1fr)}.layout{grid-template-columns:1fr}.tools{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:720px){.app{grid-template-columns:1fr}aside{display:none}.content{padding:24px 16px}.quick{grid-template-columns:repeat(2,1fr)}.tools{grid-template-columns:1fr}header{padding:0 14px}.hero{display:block}.hero-right{margin-top:15px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="logo">D</div>
+      <div><b>DevHub</b><span>Developer toolbox</span></div>
+    </div>
+    <div class="nav-label">Workspace</div>
+    <div class="nav">
+      <button class="active" onclick="setCategory('All Tools',this)"><span class="icon">⌘</span>All Tools</button>
+      <button onclick="setCategory('Favorites',this)"><span class="icon">★</span>Favorites</button>
+      <button onclick="setCategory('Recent',this)"><span class="icon">◷</span>Recent</button>
+    </div>
+    <div class="nav-label">Categories</div>
+    <div class="nav">
+      <button onclick="setCategory('JSON & Data',this)"><span class="icon">{ }</span>JSON & Data</button>
+      <button onclick="setCategory('API & HTTP',this)"><span class="icon">⇄</span>API & HTTP</button>
+      <button onclick="setCategory('Security',this)"><span class="icon">⌾</span>Security</button>
+      <button onclick="setCategory('Encoding',this)"><span class="icon">⌗</span>Encoding</button>
+      <button onclick="setCategory('SQL & Database',this)"><span class="icon">▤</span>SQL & Database</button>
+      <button onclick="setCategory('Text & Regex',this)"><span class="icon">Aa</span>Text & Regex</button>
+      <button onclick="setCategory('Git & DevOps',this)"><span class="icon">⑂</span>Git & DevOps</button>
+      <button onclick="setCategory('Date & Time',this)"><span class="icon">◷</span>Date & Time</button>
+    </div>
+    <div class="bottom">
+      <div class="upgrade">
+        <b>Unlock DevHub Pro</b>
+        <p>AI tools, saved workflows and advanced API utilities.</p>
+        <button>Explore Pro</button>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <header>
+      <div class="search">
+        <span class="magnify">⌕</span>
+        <input id="searchInput" placeholder="Search tools... e.g. JSON to C#, JWT decoder, SQL formatter" oninput="filterTools()" />
+        <span class="shortcut">Ctrl K</span>
+      </div>
+      <div class="top-actions">
+        <button title="Theme">☼</button>
+        <button title="GitHub">◉</button>
+        <div class="avatar">NT</div>
+      </div>
+    </header>
+
+    <section class="content">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Developer workspace</div>
+          <h1>Everything developers need.<br>In one place.</h1>
+          <p>Format, convert, debug, validate and generate without opening another tab. Fast, focused and built around your workflow.</p>
+        </div>
+        <div class="hero-right">
+          <span class="pill">⚡ Client-side tools</span>
+          <span class="pill">⌘ Keyboard first</span>
+        </div>
+      </div>
+
+      <div class="section-title"><h2>Quick access</h2><span>Most used by developers</span></div>
+      <div class="quick">
+        <div class="quick-card" onclick="openTool('JSON Formatter')"><div class="quick-icon">{ }</div><b>JSON Formatter</b><p>Beautify & validate JSON</p></div>
+        <div class="quick-card" onclick="openTool('JWT Decoder')"><div class="quick-icon">🔐</div><b>JWT Decoder</b><p>Inspect tokens instantly</p></div>
+        <div class="quick-card" onclick="openTool('JSON Diff')"><div class="quick-icon">⇄</div><b>JSON Diff</b><p>Compare two JSON objects</p></div>
+        <div class="quick-card" onclick="openTool('Regex Tester')"><div class="quick-icon">.*</div><b>Regex Tester</b><p>Test & explain patterns</p></div>
+        <div class="quick-card" onclick="openTool('SQL Formatter')"><div class="quick-icon">▤</div><b>SQL Formatter</b><p>Clean up SQL queries</p></div>
+        <div class="quick-card" onclick="openTool('cURL Builder')"><div class="quick-icon">↯</div><b>cURL Builder</b><p>Build HTTP requests</p></div>
+      </div>
+
+      <div class="section-title"><h2 id="categoryTitle">All tools</h2><span id="toolCount">24 tools</span></div>
+      <div class="layout">
+        <div class="tools" id="toolGrid"></div>
+        <div class="sidepanel">
+          <h3>Recently used</h3>
+          <div class="recent" id="recentList">
+            <div class="recent-item" onclick="openTool('JSON → C#')"><b>JSON → C#</b><small>2 minutes ago</small></div>
+            <div class="recent-item" onclick="openTool('Base64 Encode / Decode')"><b>Base64 Encode / Decode</b><small>18 minutes ago</small></div>
+            <div class="recent-item" onclick="openTool('Timestamp Converter')"><b>Timestamp Converter</b><small>Today</small></div>
+          </div>
+          <div class="banner">
+            <div><b>Tip: press Ctrl + K</b><p>Jump to any tool in seconds.</p></div>
+            <button onclick="openSearch()">Try it</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <input id="modalSearch" placeholder="Search any developer tool..." oninput="modalFilter()" />
+    <div class="results" id="results"></div>
+  </div>
+</div>
+
+<script>
+const tools = [
+  ['JSON Formatter','JSON & Data','Beautify and format JSON','{ }'],
+  ['JSON Validator','JSON & Data','Validate JSON and find errors','✓'],
+  ['JSON Minifier','JSON & Data','Compress JSON instantly','↓'],
+  ['JSON Diff','JSON & Data','Compare JSON objects','⇄'],
+  ['JSON → C#','JSON & Data','Generate C# classes','C#'],
+  ['JSON → TypeScript','JSON & Data','Generate TypeScript interfaces','TS'],
+  ['JSON → YAML','JSON & Data','Convert JSON to YAML','Y'],
+  ['JSON Schema Generator','JSON & Data','Create JSON Schema from data','◇'],
+  ['JSONPath Tester','JSON & Data','Test JSONPath expressions','$.'],
+  ['REST API Tester','API & HTTP','Send and inspect HTTP requests','API'],
+  ['cURL Builder','API & HTTP','Build cURL commands visually','↯'],
+  ['HTTP Status Lookup','API & HTTP','Understand HTTP status codes','200'],
+  ['Webhook Tester','API & HTTP','Inspect webhook payloads','⚡'],
+  ['JWT Decoder','Security','Decode JWT headers and claims','JWT'],
+  ['Hash Generator','Security','Generate SHA and MD hashes','#'],
+  ['UUID Generator','Security','Generate UUID v4 values','UUID'],
+  ['Base64 Encode / Decode','Encoding','Encode and decode Base64','64'],
+  ['URL Encode / Decode','Encoding','Safely encode URLs','%'],
+  ['SQL Formatter','SQL & Database','Format SQL queries','SQL'],
+  ['JSON → SQL','SQL & Database','Generate SQL from JSON','SQL'],
+  ['Regex Tester','Text & Regex','Test regular expressions','.*'],
+  ['Text Diff','Text & Regex','Compare text side by side','±'],
+  ['Timestamp Converter','Date & Time','Convert Unix timestamps','⏱'],
+  ['Cron Expression Builder','Date & Time','Build and explain cron jobs','⌁'],
+  ['Gitignore Generator','Git & DevOps','Generate .gitignore files','Git'],
+  ['Docker Compose Validator','Git & DevOps','Validate compose YAML','🐳']
+];
+
+const grid=document.getElementById('toolGrid');
+const count=document.getElementById('toolCount');
+let currentCategory='All Tools';
+
+function render(list=tools){
+  grid.innerHTML='';
+  list.forEach((t,i)=>{
+    const el=document.createElement('div');
+    el.className='tool';
+    el.innerHTML=`<div class="tooltop"><div class="toolicon">${t[3]}</div><button class="star" onclick="toggleStar(event,this)">☆</button></div><b>${t[0]}</b><p>${t[2]}</p><span class="tag">${t[1]}</span>`;
+    el.onclick=()=>openTool(t[0]);
+    grid.appendChild(el);
+  });
+  count.textContent=`${list.length} tools`;
+}
+function filterTools(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  let list=tools.filter(t=>t.join(' ').toLowerCase().includes(q));
+  if(currentCategory!=='All Tools') list=list.filter(t=>t[1]===currentCategory);
+  render(list);
+}
+function setCategory(cat,btn){
+  currentCategory=cat;
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('categoryTitle').textContent=cat;
+  filterTools();
+}
+function toggleStar(e,btn){e.stopPropagation();btn.classList.toggle('on');btn.textContent=btn.classList.contains('on')?'★':'☆'}
+function openTool(name){
+  alert(name + "\\n\\nTool workspace placeholder — connect this card to your actual tool page/component.");
+}
+function openSearch(){
+  document.getElementById('modal').classList.add('open');
+  document.getElementById('modalSearch').focus();
+  modalFilter();
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+function modalFilter(){
+  const q=document.getElementById('modalSearch').value.toLowerCase();
+  const list=tools.filter(t=>t.join(' ').toLowerCase().includes(q)).slice(0,10);
+  document.getElementById('results').innerHTML=list.map(t=>`<div class="result" onclick="openTool('${t[0]}');closeModal()"><b>${t[0]}</b><span>${t[1]}</span></div>`).join('');
+}
+document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();openSearch()}
+  if(e.key==='Escape')closeModal();
+});
+render();
+</script>
+</body>
+</html>
