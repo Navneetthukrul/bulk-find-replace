@@ -1,0 +1,6 @@
+name = "bulk-find-replace"
+compatibility_date = "2026-08-22"
+
+# Tells Cloudflare Workers to serve the static assets from this directory
+[assets]
+directory = "./out"
