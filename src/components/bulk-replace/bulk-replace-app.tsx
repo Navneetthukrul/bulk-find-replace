@@ -10,6 +10,13 @@ import {
   SUPPORTED_EXTENSIONS, 
   processFiles 
 } from "@/lib/bulk-replace-engine";
+import {
+  logFilesSelected,
+  logReplacementRuleCreated,
+  logReplacementRulesCreatedBulk,
+  logReplacementCompleted,
+  logDownloadStarted
+} from "@/lib/analytics";
 
 function formatBytes(bytes: number, decimals = 2) {
   if (!+bytes) return '0 Bytes';
@@ -86,6 +93,12 @@ export function BulkReplaceApp() {
       currentRules = [];
     }
     setRules([...currentRules, ...newRules]);
+    
+    // Log multiple replacement rules created
+    if (newRules.length > 0) {
+      logReplacementRulesCreatedBulk(newRules.length);
+    }
+
     setBulkPairs(null);
     setBulkFindList("");
     setBulkReplaceList("");
@@ -138,6 +151,9 @@ export function BulkReplaceApp() {
     if (newFiles.length > 0) {
       setFiles(prev => [...prev, ...newFiles]);
       setHasProcessed(false);
+      
+      const addedSize = newFiles.reduce((acc, f) => acc + f.size, 0);
+      logFilesSelected(newFiles.length, addedSize);
     }
     
     if (fileInputRef.current) {
@@ -184,6 +200,7 @@ export function BulkReplaceApp() {
     setRules(prev => [...prev, { id: crypto.randomUUID(), find: "", replace: "" }]);
     setHasProcessed(false);
     setPreviewResult(null);
+    logReplacementRuleCreated();
   };
 
   const updateRule = (id: string, field: "find" | "replace", value: string) => {
@@ -224,11 +241,15 @@ export function BulkReplaceApp() {
     setPreviewResult(result);
     setHasProcessed(true);
     setIsProcessing(false);
+    
+    logReplacementCompleted(files.length, validRules.length, result.totalReplacements);
   };
 
   const handleDownload = async () => {
     if (!previewResult || previewResult.files.length === 0) return;
     
+    logDownloadStarted();
+
     if (previewResult.files.length === 1) {
       // Single file download
       const file = previewResult.files[0];
