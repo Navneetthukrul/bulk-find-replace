@@ -1,3 +1,13 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "About",
+  description: "Learn about BulkFindReplace and our mission to provide a fast, secure, browser-based tool for batch text replacement.",
+  alternates: {
+    canonical: "/about",
+  }
+};
+
 export default function AboutPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8 md:py-12 prose prose-slate dark:prose-invert">

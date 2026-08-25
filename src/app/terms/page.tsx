@@ -1,3 +1,13 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Terms of Service",
+  description: "Read our Terms of Service for using BulkFindReplace.",
+  alternates: {
+    canonical: "/terms",
+  }
+};
+
 export default function TermsPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8 md:py-12 prose prose-slate dark:prose-invert">

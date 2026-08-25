@@ -1,12 +1,16 @@
 import { BulkReplaceApp } from "@/components/bulk-replace/bulk-replace-app";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Bulk Find & Replace Multiple Files Online | Free Tool",
-  description: "Bulk find and replace text across multiple files locally in your browser. Edit multiple files at once. Free, fast, and secure tool for Windows, Mac, and Linux.",
+  title: "Find and Replace Text in Multiple Files Online | BulkFindReplace",
+  description: "Upload multiple files, add one or many find and replace rules, process everything locally in your browser, and download the updated files as a ZIP. Free to use.",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Bulk Find & Replace Multiple Files Online",
-    description: "Bulk find and replace text across multiple files locally in your browser.",
+    title: "Find and Replace Text in Multiple Files Online",
+    description: "Upload multiple files, add multiple replacement rules, and process everything locally in your browser.",
     type: "website",
   }
 };
@@ -16,9 +20,9 @@ export default function Home() {
     <div className="w-full flex flex-col items-center pb-24">
       {/* Intro section */}
       <section className="w-full max-w-4xl mx-auto px-4 py-8 text-center md:py-12">
-        <h1 className="text-3xl md:text-5xl font-bold mb-4">Bulk Find & Replace Multiple Files Online</h1>
+        <h1 className="text-3xl md:text-5xl font-bold mb-4">Find and Replace Text in Multiple Files Online</h1>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-          Make the same text changes across many files at once. Drop your files, set your rules, and process everything locally in your browser.
+          Upload multiple files, add one or many find &rarr; replace rules, process everything in your browser, and download the updated files as a ZIP.
         </p>
       </section>
 
@@ -43,47 +47,42 @@ export default function Home() {
 
       {/* SEO Content Section */}
       <article className="w-full max-w-3xl mx-auto px-4 prose prose-slate dark:prose-invert">
-        <h2>Bulk Find & Replace Tool</h2>
+        <h2>Bulk Find and Replace Multiple Files</h2>
         <p>
-          Need to replace text in multiple files online? You've come to the right place. Our <strong>bulk find and replace tool</strong> makes it easy to make the same exact text changes across dozens, hundreds, or even thousands of files instantly.
+          Need to <strong>find and replace in multiple files</strong> without downloading complicated software? Our bulk find and replace tool lets you make the exact same text changes across dozens, hundreds, or even thousands of files instantly.
         </p>
-
-        <h3>What is bulk find and replace?</h3>
         <p>
-          Bulk find and replace (also known as batch text replacement) is a technique for updating strings of text across multiple documents at the same time. Instead of opening each file, searching for a word, typing the replacement, saving the file, and moving to the next one, you apply a set of rules to a large batch of files automatically.
+          <strong>Your files are processed locally in your browser and are not uploaded to our server.</strong> You can read our <Link href="/privacy">Privacy Policy</Link> to learn more about how we keep your data secure. For more information about the tool's origins, check out our <Link href="/about">About page</Link>.
         </p>
-
-        <h3>Why use bulk find and replace?</h3>
-        <p>
-          If you need to update a company name, change an API URL, or migrate domains across a large project, doing it manually is tedious and error-prone. By using a multi-file tool, you save hours of work. Plus, our tool runs entirely in your web browser—your files are never uploaded to a server, ensuring complete privacy and maximum speed.
-        </p>
-
-        <h2>How to Find and Replace Text in Multiple Files</h2>
-        <p>Using our bulk file editor is simple:</p>
+        
+        <h2>How to Replace Text Across Multiple Files</h2>
+        <p>Using our bulk file editor is straightforward:</p>
         <ol>
-          <li><strong>Select or drop multiple files</strong> into the upload area above.</li>
-          <li><strong>Define your find & replace rules.</strong> You can add multiple rules to process different text pairs simultaneously.</li>
+          <li><strong>Select or drop multiple files</strong> into the upload area above. Maximum total selected file size: 50 MB.</li>
+          <li><strong>Add your replacement rules.</strong> You can apply multiple find and replace rules at once.</li>
           <li>Click <strong>Preview Changes</strong> to see how many files will be modified.</li>
-          <li>Click <strong>Apply Changes</strong> to execute the replacements.</li>
-          <li>Click <strong>Download All Files</strong> to get a ZIP archive of your modified files.</li>
+          <li>Click <strong>Apply Changes</strong> to execute the text replacements.</li>
+          <li>Click <strong>Download All Files</strong> to get a ZIP archive of your newly modified files.</li>
         </ol>
 
-        <h2>Supported File Types</h2>
-        <p>Our tool supports a wide variety of text-based formats:</p>
-        <ul>
-          <li><strong>Code files:</strong> .js, .jsx, .ts, .tsx, .py, .java, .cs, .cpp, .c, .h, .go, .rs, .php, .rb, .swift, .kt</li>
-          <li><strong>Data & Configuration:</strong> .json, .xml, .yaml, .yml, .csv, .toml, .ini, .env, .properties, .config</li>
-          <li><strong>Web & Text:</strong> .html, .css, .scss, .sql, .md, .mdx, .txt</li>
-        </ul>
+        <h2>Apply Multiple Find and Replace Rules at Once</h2>
+        <p>
+          Unlike basic text editors, BulkFindReplace allows you to define multiple replacement rules in a single workflow. 
+        </p>
+        <p>
+          <strong>Sequential replacement behavior:</strong><br />
+          Rules are applied from top to bottom. For example, if your first rule is <code>foo &rarr; bar</code> and your second rule is <code>bar &rarr; baz</code>, any instance of <code>foo</code> will ultimately become <code>baz</code>.
+        </p>
 
         <h2>Common Use Cases</h2>
-        <p>Here are some scenarios where a batch find and replace is incredibly useful:</p>
+        <p>Here are some common scenarios where batch text replacement is useful:</p>
         <ul>
-          <li><strong>Updating domains:</strong> Changing <code>old-domain.com</code> to <code>new-domain.com</code> across website files.</li>
-          <li><strong>Renaming variables:</strong> Updating variable names across exported codebase files.</li>
-          <li><strong>Updating API URLs:</strong> Swapping out an old endpoint URL for a new one in multiple configuration files.</li>
-          <li><strong>Replacing company/product names:</strong> Quickly rebranding across documentation and HTML files.</li>
-          <li><strong>Cleaning exported datasets:</strong> Normalizing specific values in CSV or JSON exports.</li>
+          <li><strong>Update domains across HTML files:</strong> Change an old URL to a new one across a static website.</li>
+          <li><strong>Update API URLs across config files:</strong> Swap out an old endpoint URL for a new one in <code>.json</code> or <code>.yaml</code> files.</li>
+          <li><strong>Rename values across JSON files:</strong> Standardize property names or values in large data exports.</li>
+          <li><strong>Update Markdown links:</strong> Fix broken internal links across documentation in <code>.md</code> files.</li>
+          <li><strong>Update repeated strings across source files:</strong> Change variable names or class names across <code>.js</code>, <code>.ts</code>, or <code>.css</code> files.</li>
+          <li><strong>Migrate environment/config values:</strong> Quickly update <code>.env</code> examples or property files.</li>
         </ul>
 
         {/* Ad Slot 3 */}
@@ -93,37 +92,63 @@ export default function Home() {
           </div>
         </div>
 
+        <h2>Why Use BulkFindReplace</h2>
+        <p>
+          We built this tool to solve a specific problem: quickly replacing text in multiple files online without installing a desktop application or writing a custom script. 
+          By processing everything directly in your browser, it's fast, free, and secure. If you encounter any issues, please <Link href="/contact">contact us</Link>. By using the tool, you agree to our <Link href="/terms">Terms of Service</Link>.
+        </p>
+
         <h2 id="faq">Frequently Asked Questions</h2>
         
         <div className="space-y-6 mt-6">
           <div>
-            <h3 className="text-xl font-semibold mt-0 mb-2">Can I replace text in multiple files at once?</h3>
-            <p className="mt-0">Yes, the primary purpose of this tool is to process multiple files at the same time. Simply select or drag multiple files into the upload area.</p>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Can I find and replace text in multiple files at once?</h3>
+            <p className="mt-0">Yes, the primary purpose of this tool is to process multiple files at the same time. Simply select or drag your files into the upload area.</p>
           </div>
           
           <div>
-            <h3 className="text-xl font-semibold mt-0 mb-2">Can I add multiple find-and-replace rules?</h3>
-            <p className="mt-0">Yes, you can define as many rules as you need. They will be executed in sequence on each of the selected files.</p>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Can I use multiple find and replace rules?</h3>
+            <p className="mt-0">Yes, you can add multiple find and replace rules. They are applied sequentially from top to bottom on each file.</p>
           </div>
           
           <div>
             <h3 className="text-xl font-semibold mt-0 mb-2">Are my files uploaded to a server?</h3>
-            <p className="mt-0">No. Your files stay in your browser. All file reading, text replacement, and ZIP generation happens locally on your device for complete privacy and security.</p>
+            <p className="mt-0">No. Your files are processed locally in your browser and are not uploaded to our server.</p>
           </div>
           
           <div>
-            <h3 className="text-xl font-semibold mt-0 mb-2">Can I download all modified files?</h3>
-            <p className="mt-0">Yes. If you process multiple files, the tool will automatically bundle them into a single ZIP archive for easy downloading.</p>
+            <h3 className="text-xl font-semibold mt-0 mb-2">What file types are supported?</h3>
+            <p className="mt-0">We support most text-based files, including code (<code>.js</code>, <code>.ts</code>, <code>.py</code>), data (<code>.json</code>, <code>.csv</code>, <code>.xml</code>), and web files (<code>.html</code>, <code>.css</code>, <code>.md</code>).</p>
           </div>
           
           <div>
-            <h3 className="text-xl font-semibold mt-0 mb-2">Does this tool work on Windows, Mac and Linux?</h3>
-            <p className="mt-0">Yes, because it is a web-based utility, it works on any modern operating system and browser without installing any software.</p>
+            <h3 className="text-xl font-semibold mt-0 mb-2">What is the maximum file size?</h3>
+            <p className="mt-0">Maximum total selected file size: 50 MB.</p>
           </div>
           
           <div>
-            <h3 className="text-xl font-semibold mt-0 mb-2">Is this tool free?</h3>
-            <p className="mt-0">Yes, this bulk text replacement tool is completely free to use.</p>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Can I replace text with an empty value?</h3>
+            <p className="mt-0">Yes, you can leave the "Replace" field blank to completely remove the matched text from your files.</p>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Are replacement rules case sensitive?</h3>
+            <p className="mt-0">Yes, our basic literal string replacement is case-sensitive by default to ensure precise matches.</p>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-semibold mt-0 mb-2">In what order are replacement rules applied?</h3>
+            <p className="mt-0">Rules are applied sequentially from top to bottom. The output of the first rule becomes the input for the second rule, and so on.</p>
+          </div>
+          
+          <div>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Do I need to install software?</h3>
+            <p className="mt-0">No, the entire tool runs in your web browser. There is nothing to install.</p>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-semibold mt-0 mb-2">Do I need an account?</h3>
+            <p className="mt-0">No, the tool is completely free to use and requires no account or registration.</p>
           </div>
         </div>
 
@@ -143,9 +168,9 @@ export default function Home() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebApplication",
-            "name": "Bulk Find & Replace",
+            "name": "BulkFindReplace",
             "url": "https://bulkfindreplace.com",
-            "description": "Bulk find and replace text across multiple files locally in your browser. Edit multiple files at once.",
+            "description": "Find and replace text in multiple files online. Upload multiple files, add one or many find and replace rules, process everything in your browser, and download the updated files as a ZIP.",
             "applicationCategory": "DeveloperApplication",
             "operatingSystem": "Any",
             "offers": {

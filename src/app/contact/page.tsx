@@ -1,3 +1,13 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Contact Us",
+  description: "Get in touch with the BulkFindReplace team for support, feedback, or inquiries.",
+  alternates: {
+    canonical: "/contact",
+  }
+};
+
 export default function ContactPage() {
   return (
     <div className="mx-auto w-full max-w-3xl px-4 py-8 md:py-12 prose prose-slate dark:prose-invert">

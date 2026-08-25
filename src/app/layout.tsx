@@ -20,11 +20,11 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bulkfindreplace.com"),
-  title: "Bulk Find & Replace Multiple Files Online | Free Tool",
-  description: "Bulk find and replace text across multiple files locally in your browser. Edit multiple files at once. Free, fast, and secure tool for Windows, Mac, and Linux.",
-  alternates: {
-    canonical: "/",
+  title: {
+    default: "Find and Replace Text in Multiple Files Online | BulkFindReplace",
+    template: "%s | BulkFindReplace",
   },
+  description: "Upload multiple files, add one or many find and replace rules, process everything locally in your browser, and download the updated files as a ZIP. Free to use.",
 };
 
 export default function RootLayout({
