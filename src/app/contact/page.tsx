@@ -17,7 +17,7 @@ export default function ContactPage() {
       
       <h2>Get in Touch</h2>
       <p>For support, inquiries, or feedback regarding the Bulk Find & Replace tool, please reach out to us via email at:</p>
-      <p><strong>support@bulkfindreplace.com</strong> <em>(Note: Example email, please update for production)</em></p>
+      <p><strong><a href="mailto:bulkfindreplace.support@gmail.com">bulkfindreplace.support@gmail.com</a></strong></p>
       
       <h2>Bug Reports</h2>
       <p>If you encounter any issues while using the tool, please include the following information in your email to help us resolve the problem faster:</p>
