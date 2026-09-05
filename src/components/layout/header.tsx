@@ -4,23 +4,69 @@ import { Replace, Globe } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+
 import { Dictionary } from "@/i18n/dictionaries";
 
 export function LanguageSelector() {
-  const pathname = usePathname();
-  
+  const [isOpen, setIsOpen] = React.useState(false);
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
+
+  React.useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current && 
+        !buttonRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    }
+    
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("keydown", handleKeyDown);
+    }
+    
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen]);
+
   return (
-    <div className="relative group">
-      <button className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+    <div className="relative">
+      <button 
+        ref={buttonRef}
+        onClick={() => setIsOpen(!isOpen)}
+        aria-haspopup="menu"
+        aria-expanded={isOpen}
+        aria-label="Select language"
+        className="flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-sm font-medium shadow-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50"
+      >
         <Globe className="h-4 w-4" />
       </button>
-      <div className="absolute right-0 top-full mt-2 w-40 rounded-md border bg-background p-2 opacity-0 shadow-md group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
-        <Link href="/" className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">English</Link>
-        <Link href="/fr/" className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Français</Link>
-        <Link href="/de/" className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Deutsch</Link>
-        <Link href="/pt-br/" className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Português (Brasil)</Link>
-      </div>
+      
+      {isOpen && (
+        <div 
+          ref={dropdownRef}
+          role="menu"
+          className="absolute right-0 top-full mt-2 w-40 rounded-md border bg-background p-2 shadow-md z-50"
+        >
+          <Link href="/" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">English</Link>
+          <Link href="/fr/" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Français</Link>
+          <Link href="/de/" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Deutsch</Link>
+          <Link href="/pt-br/" role="menuitem" onClick={() => setIsOpen(false)} className="block rounded px-2 py-1.5 text-sm hover:bg-surface-hover">Português (Brasil)</Link>
+        </div>
+      )}
     </div>
   );
 }
