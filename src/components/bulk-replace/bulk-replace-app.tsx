@@ -17,6 +17,7 @@ import {
   logReplacementCompleted,
   logDownloadStarted
 } from "@/lib/analytics";
+import { Dictionary } from "@/i18n/dictionaries";
 
 function formatBytes(bytes: number, decimals = 2) {
   if (!+bytes) return '0 Bytes';
@@ -27,7 +28,7 @@ function formatBytes(bytes: number, decimals = 2) {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-export function BulkReplaceApp() {
+export function BulkReplaceApp({ dict }: { dict: Dictionary }) {
   const [files, setFiles] = React.useState<FileData[]>([]);
   const [rules, setRules] = React.useState<ReplaceRule[]>([{ id: crypto.randomUUID(), find: "", replace: "" }]);
   const [isDragging, setIsDragging] = React.useState(false);
@@ -58,19 +59,19 @@ export function BulkReplaceApp() {
     const replaceLines = bulkReplaceList === "" && bulkFindList === "" ? [] : rText.split(/\r?\n/);
     
     if (findLines.length === 0) {
-      setBulkError("Find list cannot be empty.");
+      setBulkError(dict.findListEmpty);
       return;
     }
     
     if (findLines.length !== replaceLines.length) {
-      setBulkError(`Both lists must contain the same number of items. Find list: ${findLines.length}, Replace list: ${replaceLines.length}`);
+      setBulkError(`${dict.listsMustMatch} Find: ${findLines.length}, Replace: ${replaceLines.length}`);
       return;
     }
     
     const pairs = [];
     for (let i = 0; i < findLines.length; i++) {
       if (findLines[i] === "") {
-        setBulkError(`Blank lines are not allowed in the Find list (Line ${i + 1}).`);
+        setBulkError(`${dict.blankLinesNotAllowed} (Line ${i + 1}).`);
         return;
       }
       pairs.push({ find: findLines[i], replace: replaceLines[i] });
@@ -94,7 +95,6 @@ export function BulkReplaceApp() {
     }
     setRules([...currentRules, ...newRules]);
     
-    // Log multiple replacement rules created
     if (newRules.length > 0) {
       logReplacementRulesCreatedBulk(newRules.length);
     }
@@ -217,26 +217,25 @@ export function BulkReplaceApp() {
 
   const handleProcess = () => {
     if (files.length === 0 || isOverLimit) {
-      if (!isOverLimit) setError("Please add at least one file to process.");
+      if (!isOverLimit) setError(dict.addAtLeastOneFile);
       return;
     }
 
     const hasEmptyFind = rules.some(r => r.find.trim() === "");
     if (hasEmptyFind) {
-      setError("Find value cannot be empty in any rule.");
+      setError(dict.findValueCannotBeEmpty);
       return;
     }
 
     const validRules = rules.filter(r => r.find.length > 0);
     if (validRules.length === 0) {
-      setError("Please add at least one valid replacement rule.");
+      setError(dict.addValidRule);
       return;
     }
 
     setError(null);
     setIsProcessing(true);
     
-    // Process is already computed in previewResult, but we recompute to be safe
     const result = processFiles(files, rules);
     setPreviewResult(result);
     setHasProcessed(true);
@@ -251,7 +250,6 @@ export function BulkReplaceApp() {
     logDownloadStarted();
 
     if (previewResult.files.length === 1) {
-      // Single file download
       const file = previewResult.files[0];
       const blob = new Blob([file.processedContent], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
@@ -263,13 +261,11 @@ export function BulkReplaceApp() {
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } else {
-      // Multiple files -> ZIP
       setIsProcessing(true);
       try {
         const JSZip = (await import("jszip")).default;
         const zip = new JSZip();
         
-        // Handle name collisions
         const nameCounts = new Map<string, number>();
         
         previewResult.files.forEach(file => {
@@ -301,7 +297,7 @@ export function BulkReplaceApp() {
         URL.revokeObjectURL(url);
       } catch (err) {
         console.error("ZIP Generation error", err);
-        setError("Failed to generate ZIP file.");
+        setError(dict.failedToGenerateZip);
       } finally {
         setIsProcessing(false);
       }
@@ -314,11 +310,10 @@ export function BulkReplaceApp() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
             <Replace className="h-6 w-6 text-accent" />
-            Bulk Find & Replace
+            {dict.title}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Apply sequential replacement rules across multiple files. 
-            <span className="font-medium text-foreground ml-1">Files are processed locally in your browser.</span>
+            {dict.subtitle}
           </p>
         </div>
         <div className="flex gap-2">
@@ -327,7 +322,7 @@ export function BulkReplaceApp() {
             data-testid="clear-all-btn"
             className="rounded-md border bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-surface-hover"
           >
-            Clear All
+            {dict.clearAll}
           </button>
         </div>
       </div>
@@ -335,7 +330,7 @@ export function BulkReplaceApp() {
       {isOverLimit && (
         <div className="mb-6 flex items-center gap-2 rounded-md border border-red-500/50 bg-red-500/10 px-4 py-3 text-sm text-red-500" data-testid="size-limit-error">
           <AlertCircle className="h-4 w-4" />
-          Total file size exceeds the 50 MB limit. Remove some files to continue.
+          {dict.sizeLimitError}
         </div>
       )}
 
@@ -354,21 +349,21 @@ export function BulkReplaceApp() {
           {/* Rules Section */}
           <div className="rounded-xl border bg-surface p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-foreground">Replacement Rules</h2>
+              <h2 className="text-base font-semibold text-foreground">{dict.rulesTitle}</h2>
               <div className="flex gap-2">
                 <button 
                   onClick={() => setActiveTab('manual')}
                   data-testid="tab-manual"
                   className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${activeTab === 'manual' ? 'bg-accent text-accent-foreground shadow-sm' : 'bg-background border border-border text-muted-foreground hover:bg-surface-hover'}`}
                 >
-                  Manual Editor
+                  {dict.tabManual}
                 </button>
                 <button 
                   onClick={() => setActiveTab('bulk')}
                   data-testid="tab-bulk"
                   className={`px-3 py-1.5 text-xs font-bold rounded-md transition-colors ${activeTab === 'bulk' ? 'bg-accent text-accent-foreground shadow-sm' : 'bg-background border border-border text-muted-foreground hover:bg-surface-hover'}`}
                 >
-                  Bulk Pair Lists
+                  {dict.tabBulk}
                 </button>
               </div>
             </div>
@@ -381,7 +376,7 @@ export function BulkReplaceApp() {
                     data-testid="add-rule-btn"
                     className="flex items-center gap-1 rounded text-xs font-medium text-accent hover:text-accent/80 transition-colors"
                   >
-                    <Plus className="h-3 w-3" /> Add Rule
+                    <Plus className="h-3 w-3" /> {dict.addRule}
                   </button>
                 </div>
                 {rules.map((rule, index) => (
@@ -389,23 +384,23 @@ export function BulkReplaceApp() {
                     <div className="mt-2 text-xs font-medium text-muted-foreground w-4 text-center">{index + 1}</div>
                     <div className="flex flex-1 flex-col sm:flex-row gap-2">
                       <div className="flex-1">
-                        <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Find (Literal)</label>
+                        <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{dict.findLiteral}</label>
                         <input
                           type="text"
                           value={rule.find}
                           onChange={(e) => updateRule(rule.id, "find", e.target.value)}
-                          placeholder="Search string..."
+                          placeholder={dict.searchPlaceholder}
                           data-testid={`rule-find-${index}`}
                           className="w-full rounded-md border bg-background px-3 py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                         />
                       </div>
                       <div className="flex-1">
-                        <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Replace with</label>
+                        <label className="mb-1 block text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{dict.replaceWith}</label>
                         <input
                           type="text"
                           value={rule.replace}
                           onChange={(e) => updateRule(rule.id, "replace", e.target.value)}
-                          placeholder="Replacement string..."
+                          placeholder={dict.replacePlaceholder}
                           data-testid={`rule-replace-${index}`}
                           className="w-full rounded-md border bg-background px-3 py-2 text-sm font-mono text-foreground placeholder:text-muted-foreground focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
                         />
@@ -427,29 +422,29 @@ export function BulkReplaceApp() {
               <div className="flex flex-col gap-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Find List</label>
+                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">{dict.findList}</label>
                     <textarea 
                       value={bulkFindList} 
                       onChange={e => { setBulkFindList(e.target.value); setBulkPairs(null); setBulkError(null); }}
                       className="w-full h-40 font-mono text-sm p-3 rounded-md border bg-background text-foreground resize-y focus:outline-none focus:ring-1 focus:ring-accent"
-                      placeholder="old-api&#10;debug=true"
+                      placeholder={dict.findListPlaceholder}
                       data-testid="bulk-find-textarea"
                     />
                     <div className="text-xs text-muted-foreground mt-1" data-testid="bulk-find-count">
-                      {bulkFindList === "" ? 0 : bulkFindList.replace(/\r?\n$/, '').split(/\r?\n/).length} items
+                      {bulkFindList === "" ? 0 : bulkFindList.replace(/\r?\n$/, '').split(/\r?\n/).length} {dict.items}
                     </div>
                   </div>
                   <div>
-                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">Replace List</label>
+                    <label className="text-xs font-bold uppercase text-muted-foreground mb-1 block">{dict.replaceList}</label>
                     <textarea 
                       value={bulkReplaceList} 
                       onChange={e => { setBulkReplaceList(e.target.value); setBulkPairs(null); setBulkError(null); }}
                       className="w-full h-40 font-mono text-sm p-3 rounded-md border bg-background text-foreground resize-y focus:outline-none focus:ring-1 focus:ring-accent"
-                      placeholder="new-api&#10;debug=false"
+                      placeholder={dict.replaceListPlaceholder}
                       data-testid="bulk-replace-textarea"
                     />
                     <div className="text-xs text-muted-foreground mt-1" data-testid="bulk-replace-count">
-                      {bulkReplaceList === "" && bulkFindList === "" ? 0 : bulkReplaceList.replace(/\r?\n$/, '').split(/\r?\n/).length} items
+                      {bulkReplaceList === "" && bulkFindList === "" ? 0 : bulkReplaceList.replace(/\r?\n$/, '').split(/\r?\n/).length} {dict.items}
                     </div>
                   </div>
                 </div>
@@ -465,14 +460,14 @@ export function BulkReplaceApp() {
                   data-testid="bulk-generate-btn"
                   className="w-full py-2 bg-surface-hover border border-border rounded-md text-sm font-bold text-foreground hover:bg-accent/10 hover:text-accent hover:border-accent/50 transition-colors"
                 >
-                  Generate Pairs
+                  {dict.generatePairs}
                 </button>
 
                 {bulkPairs && (
                   <div className="mt-2 p-4 border border-accent/30 rounded-lg bg-accent/5">
                     <h3 className="text-sm font-bold mb-3 flex items-center gap-2 text-foreground">
-                      Pairing Preview
-                      <span className="text-xs font-normal text-muted-foreground">({bulkPairs.length} pairs)</span>
+                      {dict.pairingPreview}
+                      <span className="text-xs font-normal text-muted-foreground">({bulkPairs.length} {dict.pairsCount})</span>
                     </h3>
                     <div className="max-h-48 overflow-y-auto bg-background rounded-md border border-border/50 p-3 mb-4 text-sm font-mono flex flex-col gap-1.5 shadow-inner">
                       {bulkPairs.slice(0, 100).map((p, i) => (
@@ -485,7 +480,7 @@ export function BulkReplaceApp() {
                       ))}
                       {bulkPairs.length > 100 && (
                         <div className="text-muted-foreground text-xs text-center pt-2 mt-1 border-t border-border/50 italic">
-                          Showing 100 of {bulkPairs.length} pairs
+                          {dict.showingPairs} 100 / {bulkPairs.length} {dict.pairsCount}
                         </div>
                       )}
                     </div>
@@ -494,7 +489,7 @@ export function BulkReplaceApp() {
                       data-testid="bulk-use-rules-btn"
                       className="w-full py-2.5 bg-accent text-accent-foreground rounded-md text-sm font-bold hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background"
                     >
-                      Use These Rules
+                      {dict.useTheseRules}
                     </button>
                   </div>
                 )}
@@ -504,13 +499,13 @@ export function BulkReplaceApp() {
 
           {/* Preview Section */}
           <div className="rounded-xl border bg-surface p-5 shadow-sm">
-            <h2 className="mb-4 text-base font-semibold text-foreground">Preview & Results</h2>
+            <h2 className="mb-4 text-base font-semibold text-foreground">{dict.previewResultsTitle}</h2>
             
             {files.length === 0 ? (
               <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center" data-testid="preview-empty">
                 <FileType className="mb-3 h-8 w-8 text-muted-foreground/50" />
-                <p className="text-sm font-medium text-muted-foreground">No files to preview</p>
-                <p className="text-xs text-muted-foreground/70 mt-1">Add files to see replacement statistics</p>
+                <p className="text-sm font-medium text-muted-foreground">{dict.noFilesPreview}</p>
+                <p className="text-xs text-muted-foreground/70 mt-1">{dict.addFilesHint}</p>
               </div>
             ) : (
               <div className="flex flex-col gap-2" data-testid="preview-list">
@@ -527,7 +522,7 @@ export function BulkReplaceApp() {
                         <span className="text-sm font-medium text-foreground">{file.originalName}</span>
                       </div>
                       <span className={`text-xs font-semibold ${hasChanges ? "text-accent" : "text-muted-foreground"}`}>
-                        {hasChanges ? `${file.replacements} replacement${file.replacements === 1 ? '' : 's'}` : "No changes"}
+                        {hasChanges ? `${file.replacements} ${dict.replacementsCount}` : dict.noChanges}
                       </span>
                     </div>
                   );
@@ -542,7 +537,7 @@ export function BulkReplaceApp() {
           
           <div className="rounded-xl border bg-surface p-5 shadow-sm">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-base font-semibold text-foreground">Files <span className="text-xs font-normal text-muted-foreground ml-1">({files.length})</span></h2>
+              <h2 className="text-base font-semibold text-foreground">{dict.filesTitle} <span className="text-xs font-normal text-muted-foreground ml-1">({files.length})</span></h2>
             </div>
 
             <div 
@@ -556,11 +551,10 @@ export function BulkReplaceApp() {
               onClick={() => fileInputRef.current?.click()}
             >
               <Upload className={`mb-3 h-6 w-6 ${isDragging ? "text-accent" : (isOverLimit ? "text-red-500" : "text-muted-foreground")}`} />
-              <p className="text-sm font-medium text-foreground">Drop files here</p>
-              <p className="mt-1 text-xs text-muted-foreground">or click to select</p>
+              <p className="text-sm font-medium text-foreground">{dict.dropFilesHere}</p>
+              <p className="mt-1 text-xs text-muted-foreground">{dict.orClickToSelect}</p>
               <div className="mt-4 flex flex-col items-center gap-1">
-                <p className="text-xs font-semibold text-foreground">Text & code files &middot; 50 MB total</p>
-                <p className="text-[10px] text-muted-foreground">Files are processed locally in your browser.</p>
+                <p className="text-xs font-semibold text-foreground">{dict.fileTypesInfo}</p>
               </div>
               <input
                 type="file"
@@ -578,19 +572,19 @@ export function BulkReplaceApp() {
             <details className="mb-4 group text-xs text-muted-foreground">
               <summary className="cursor-pointer list-none font-medium hover:text-foreground inline-flex items-center gap-1 select-none">
                 <span className="group-open:rotate-90 transition-transform">▶</span>
-                Supported file types
+                {dict.supportedFileTypes}
               </summary>
               <div className="mt-3 pl-3 flex flex-col gap-3 border-l-2 border-border">
                 <div>
-                  <div className="font-semibold text-foreground mb-1">Code</div>
+                  <div className="font-semibold text-foreground mb-1">{dict.code}</div>
                   <div>.js · .jsx · .ts · .tsx · .py · .java · .cs · .cpp · .c · .h<br/>.go · .rs · .php · .rb · .swift · .kt</div>
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground mb-1">Data & Config</div>
+                  <div className="font-semibold text-foreground mb-1">{dict.dataConfig}</div>
                   <div>.json · .jsonc · .xml · .yaml · .yml · .csv · .toml<br/>.ini · .env · .properties · .config</div>
                 </div>
                 <div>
-                  <div className="font-semibold text-foreground mb-1">Web & Text</div>
+                  <div className="font-semibold text-foreground mb-1">{dict.webText}</div>
                   <div>.html · .css · .scss · .sql · .graphql · .md · .mdx · .txt</div>
                 </div>
               </div>
@@ -601,26 +595,26 @@ export function BulkReplaceApp() {
               totalSize > TOTAL_LIMIT * 0.9 ? 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20' : 
               'bg-background text-muted-foreground border-border'
             }`}>
-              <span>Total size usage</span>
+              <span>{dict.totalSizeUsage}</span>
               <span data-testid="size-indicator">{formatBytes(totalSize)} / 50 MB</span>
             </div>
 
             {skippedFiles.length > 0 && (
               <div className="mb-4" data-testid="skipped-files">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-xs font-bold uppercase text-muted-foreground">Skipped files</h3>
+                  <h3 className="text-xs font-bold uppercase text-muted-foreground">{dict.skippedFiles}</h3>
                   <button 
                     onClick={() => setSkippedFiles([])}
                     className="text-[10px] text-muted-foreground hover:text-foreground"
                   >
-                    Clear
+                    {dict.clear}
                   </button>
                 </div>
                 <div className="flex flex-col gap-1 max-h-[100px] overflow-y-auto">
                   {skippedFiles.map(name => (
                     <div key={name} className="text-xs text-muted-foreground flex justify-between truncate" title={name}>
                       <span className="truncate mr-2 line-through opacity-70">{name}</span>
-                      <span className="shrink-0 text-[10px]">Unsupported file type</span>
+                      <span className="shrink-0 text-[10px]">{dict.unsupportedFileType}</span>
                     </div>
                   ))}
                 </div>
@@ -648,19 +642,19 @@ export function BulkReplaceApp() {
           </div>
 
           <div className="rounded-xl border bg-surface p-5 shadow-sm sticky top-[88px]">
-            <h2 className="mb-4 text-base font-semibold text-foreground">Summary</h2>
+            <h2 className="mb-4 text-base font-semibold text-foreground">{dict.summaryTitle}</h2>
             
             <div className="mb-6 flex flex-col gap-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Files to process:</span>
+                <span className="text-muted-foreground">{dict.filesToProcess}</span>
                 <span className="font-semibold text-foreground">{files.length}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Files changing:</span>
+                <span className="text-muted-foreground">{dict.filesChanging}</span>
                 <span className="font-semibold text-foreground" data-testid="stat-files-changed">{previewResult?.totalFilesChanged || 0}</span>
               </div>
               <div className="flex justify-between border-t pt-3 mt-1">
-                <span className="font-medium text-foreground">Total replacements:</span>
+                <span className="font-medium text-foreground">{dict.totalReplacements}</span>
                 <span className="font-bold text-accent" data-testid="stat-replacements">{previewResult?.totalReplacements || 0}</span>
               </div>
             </div>
@@ -674,7 +668,7 @@ export function BulkReplaceApp() {
                     data-testid="preview-btn"
                     className="flex w-full items-center justify-center gap-2 rounded-md border border-accent/50 bg-transparent px-4 py-3 text-sm font-bold text-accent transition-all hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50"
                   >
-                    Preview Changes
+                    {dict.previewChanges}
                   </button>
                   <button
                     onClick={handleProcess}
@@ -683,7 +677,7 @@ export function BulkReplaceApp() {
                     className="flex w-full items-center justify-center gap-2 rounded-md bg-accent px-4 py-3 text-sm font-bold text-accent-foreground transition-all hover:bg-accent/90 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50"
                   >
                     <RotateCcw className="h-4 w-4" />
-                    Replace All
+                    {dict.replaceAll}
                   </button>
                 </>
               ) : (
@@ -694,7 +688,7 @@ export function BulkReplaceApp() {
                   className="flex w-full items-center justify-center gap-2 rounded-md bg-green-600 px-4 py-3 text-sm font-bold text-white transition-all hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600 focus:ring-offset-2 focus:ring-offset-background disabled:opacity-50"
                 >
                   <Download className="h-4 w-4" />
-                  Download Processed
+                  {dict.downloadProcessed}
                 </button>
               )}
             </div>
