@@ -14,11 +14,7 @@ export function HomePage({ lang }: { lang: "en" | "fr" | "de" | "pt-br" }) {
         </p>
       </section>
 
-      <div className="w-full max-w-4xl mx-auto px-4 mb-8 text-center">
-        <div className="ad-slot min-h-[90px] bg-surface border border-border border-dashed flex items-center justify-center text-muted-foreground/50 text-sm rounded" data-ad-slot="PLACEHOLDER_1">
-          {dict.adAdvertisement}
-        </div>
-      </div>
+
 
       <div id="tool" className="w-full mb-16">
         <BulkReplaceApp dict={dict} />
