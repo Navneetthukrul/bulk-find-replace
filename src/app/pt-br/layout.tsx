@@ -51,9 +51,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="flex flex-col min-h-screen">
-            <Header dict={dict} />
+            <Header dict={dict} lang="pt-br" />
             <main className="flex-1">{children}</main>
-            <Footer />
+            <Footer dict={dict} lang="pt-br" />
           </div>
         </ThemeProvider>
       </body>

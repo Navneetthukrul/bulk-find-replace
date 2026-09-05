@@ -6,6 +6,11 @@ export type Dictionary = {
   clearAll: string;
   sizeLimitError: string;
   errorMessageGeneric: string;
+  footerDesc?: string;
+  contact?: string;
+  privacy?: string;
+  terms?: string;
+  rights?: string;
   rulesTitle: string;
   tabManual: string;
   tabBulk: string;

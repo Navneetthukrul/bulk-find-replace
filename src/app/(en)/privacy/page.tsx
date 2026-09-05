@@ -4,8 +4,15 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "Read our privacy policy. Your files are processed locally in your browser and are never uploaded to our server.",
   alternates: {
-    canonical: "/privacy",
+  "canonical": "https://bulkfindreplace.com/privacy",
+  "languages": {
+    "en": "https://bulkfindreplace.com/privacy",
+    "fr-FR": "https://bulkfindreplace.com/fr/privacy",
+    "de-DE": "https://bulkfindreplace.com/de/privacy",
+    "pt-BR": "https://bulkfindreplace.com/pt-br/privacy",
+    "x-default": "https://bulkfindreplace.com/privacy"
   }
+}
 };
 
 export default function PrivacyPage() {
@@ -39,6 +46,7 @@ export default function PrivacyPage() {
       
       <h2>6. Contact Us</h2>
       <p>If you have any questions about this Privacy Policy, please contact us via our Contact page.</p>
+      
     </div>
   );
 }

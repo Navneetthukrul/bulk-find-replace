@@ -4,8 +4,15 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description: "Read our Terms of Service for using BulkFindReplace.",
   alternates: {
-    canonical: "/terms",
+  "canonical": "https://bulkfindreplace.com/terms",
+  "languages": {
+    "en": "https://bulkfindreplace.com/terms",
+    "fr-FR": "https://bulkfindreplace.com/fr/terms",
+    "de-DE": "https://bulkfindreplace.com/de/terms",
+    "pt-BR": "https://bulkfindreplace.com/pt-br/terms",
+    "x-default": "https://bulkfindreplace.com/terms"
   }
+}
 };
 
 export default function TermsPage() {
@@ -32,6 +39,7 @@ export default function TermsPage() {
       
       <h2>6. Modifications to Service</h2>
       <p>We reserve the right to modify or discontinue, temporarily or permanently, the Service with or without notice to you.</p>
+      
     </div>
   );
 }

@@ -1,11 +1,18 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About",
+  title: "About Us",
   description: "Learn about BulkFindReplace and our mission to provide a fast, secure, browser-based tool for batch text replacement.",
   alternates: {
-    canonical: "/about",
+  "canonical": "https://bulkfindreplace.com/about",
+  "languages": {
+    "en": "https://bulkfindreplace.com/about",
+    "fr-FR": "https://bulkfindreplace.com/fr/about",
+    "de-DE": "https://bulkfindreplace.com/de/about",
+    "pt-BR": "https://bulkfindreplace.com/pt-br/about",
+    "x-default": "https://bulkfindreplace.com/about"
   }
+}
 };
 
 export default function AboutPage() {
@@ -23,6 +30,7 @@ export default function AboutPage() {
       
       <h2>Free to Use</h2>
       <p>We keep the tool free for everyone. To help support the hosting and maintenance costs, we may display non-intrusive advertisements. We are committed to ensuring these ads never interfere with the functionality of the tool.</p>
+      
     </div>
   );
 }

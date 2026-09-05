@@ -4,8 +4,15 @@ export const metadata: Metadata = {
   title: "Contact Us",
   description: "Get in touch with the BulkFindReplace team for support, feedback, or inquiries.",
   alternates: {
-    canonical: "/contact",
+  "canonical": "https://bulkfindreplace.com/contact",
+  "languages": {
+    "en": "https://bulkfindreplace.com/contact",
+    "fr-FR": "https://bulkfindreplace.com/fr/contact",
+    "de-DE": "https://bulkfindreplace.com/de/contact",
+    "pt-BR": "https://bulkfindreplace.com/pt-br/contact",
+    "x-default": "https://bulkfindreplace.com/contact"
   }
+}
 };
 
 export default function ContactPage() {
@@ -27,6 +34,7 @@ export default function ContactPage() {
         <li>The types of files you were processing</li>
         <li>A brief description of the issue</li>
       </ul>
+      
     </div>
   );
 }
