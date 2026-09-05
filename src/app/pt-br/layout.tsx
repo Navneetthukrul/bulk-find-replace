@@ -1,9 +1,23 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { Inter, JetBrains_Mono } from "next/font/google";
+import "../globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
 import { dictionaries } from "@/i18n/dictionaries";
+import { Footer } from "@/components/layout/footer";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  display: "swap",
+});
 
 export default function RootLayout({
   children,
@@ -28,7 +42,7 @@ export default function RootLayout({
         </Script>
       </head>
       <body
-        className={`var(--font-inter) var(--font-jetbrains-mono) min-h-screen bg-background text-foreground antialiased selection:bg-accent/30 overflow-x-hidden`}
+        className={`${inter.variable} ${jetbrainsMono.variable} min-h-screen bg-background text-foreground antialiased selection:bg-accent/30 overflow-x-hidden`}
       >
         <ThemeProvider
           attribute="class"
