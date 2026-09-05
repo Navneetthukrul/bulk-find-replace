@@ -20,11 +20,7 @@ export function HomePage({ lang }: { lang: "en" | "fr" | "de" | "pt-br" }) {
         <BulkReplaceApp dict={dict} />
       </div>
 
-      <div className="w-full max-w-4xl mx-auto px-4 mb-16 text-center">
-        <div className="ad-slot min-h-[90px] bg-surface border border-border border-dashed flex items-center justify-center text-muted-foreground/50 text-sm rounded" data-ad-slot="PLACEHOLDER_2">
-          {dict.adAdvertisement}
-        </div>
-      </div>
+
 
       <article className="w-full max-w-3xl mx-auto px-4 prose prose-slate dark:prose-invert">
         <h2>{dict.articleTitle1}</h2>
@@ -56,11 +52,7 @@ export function HomePage({ lang }: { lang: "en" | "fr" | "de" | "pt-br" }) {
           <li>{dict.useCase6}</li>
         </ul>
 
-        <div className="not-prose my-12">
-          <div className="ad-slot min-h-[90px] bg-surface border border-border border-dashed flex items-center justify-center text-muted-foreground/50 text-sm rounded" data-ad-slot="PLACEHOLDER_3">
-            {dict.adAdvertisement}
-          </div>
-        </div>
+
 
         <h2>{dict.articleTitle5}</h2>
         <p>{dict.articleP7}</p>
@@ -77,11 +69,7 @@ export function HomePage({ lang }: { lang: "en" | "fr" | "de" | "pt-br" }) {
         </div>
       </article>
 
-      <div className="w-full max-w-4xl mx-auto px-4 mt-16 text-center">
-        <div className="ad-slot min-h-[90px] bg-surface border border-border border-dashed flex items-center justify-center text-muted-foreground/50 text-sm rounded" data-ad-slot="PLACEHOLDER_4">
-          {dict.adAdvertisement}
-        </div>
-      </div>
+
     </div>
   );
 }
